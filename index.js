@@ -77,12 +77,18 @@ client.connect(err => {
     })
   })
 
-  app.delete('deleteBlog', (req, res) => {
-
+  app.delete('/deleteBlog/:id', (req, res) => {
+    const { id } = req.params;
+    blogsCollection.deleteOne({_id: ObjectId(id)})
+    .then(result => res.send(result.deletedCount > 0))
   })
 
-  app.patch('updateBlog', (req, res) => {
-
+  app.patch('/updateBlog/:id', (req, res) => {
+    const { id } = req.params;
+    blogsCollection.updateOne({_id: ObjectId(id)}, {
+      $set : req.body,
+    })
+    .then((result) => res.send({inserted: result.modifiedCount > 0}))
   })
   
   //client.close();
